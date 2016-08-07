@@ -1,0 +1,605 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.4"/>
+
+
+    <meta name="description" content="最是人间留不住，朱颜辞镜花辞树" />
+
+
+
+  <meta name="keywords" content="linux," />
+
+
+
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.4" />
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    analytics: {
+      google: ''
+    },
+    sidebar: 'hide'
+  };
+</script>
+
+
+
+
+  <title> 引导和关机 // Polishing </title>
+</head>
+
+<body>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <div id="header" class="header">
+      <div class="header-inner">
+        <h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand">
+      <span class="logo">
+        <i class="icon-logo"></i>
+      </span>
+      <span class="site-title">Polishing</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<div class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/">
+            <i class="menu-item-icon icon-home"></i> <br />
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            <i class="menu-item-icon icon-categories"></i> <br />
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            <i class="menu-item-icon icon-archives"></i> <br />
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            <i class="menu-item-icon icon-tags"></i> <br />
+            标签
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+</div>
+
+
+      </div>
+    </div>
+
+    <div id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              引导和关机
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015-10-24
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/Linux系统管理/">Linux系统管理</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/10/24/Linux引导和关机/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/24/Linux引导和关机/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <h4 id="前期知识点">前期知识点</h4><h5 id="ROM">ROM</h5><p>　　　<a href="http://baike.baidu.com/link?url=r70Yr8TSF5Lh5r2JTpl1v8Th0jvgSuS-SDHik_xG3KYgz9nlMANwcSRtIS994tc2331o2hp0h8huBH9iaVenDK" target="_blank" rel="external">ROM</a>(只读存储器)，ROM所存数据，一般是装入整机前事先写好的，整机工作过程中只能读出，而不像随机存储器那样能快速地、方便地加以改写。ROM所存数据稳定 ，断电后所存数据也不会改变；其结构较简单，读出较方便，因而常用于存储各种固定程序和数据。</p>
+<h5 id="RAM">RAM</h5><p>　　　<a href="http://baike.baidu.com/link?url=iaGUg5r7aQGC_83Gg37t5nVl0Lu_frxhikooKhIOJmSdlrTCESSmq0WvWv5SfqaSheiu1RinhknQ5ZZA3fy1G_" target="_blank" rel="external">RAM</a>(随机存储存储器)，又称作“随机存储器”，是与CPU直接交换数据的内部存储器，也叫主存(内存)。它可以随时读写，而且速度很快，通常作为操作系统或其他正在运行中的程序的临时数据存储媒介。存储单元的内容可按需随意取出或存入，且存取的速度与存储单元的位置无关的存储器。这种存储器在断电时将丢失其存储内容，故主要用于存储短时间使用的程序。</p>
+<h5 id="BIOS">BIOS</h5><p>　　　<a href="http://baike.baidu.com/link?url=46KiMszqyAwFVWVlasR6TsrPTHtYUVw2fdCbGTuJ-Hpx0jYcRSHuYNGJqTVKBjtBAdL8BUOfYDFzPeD_EkS5sK" target="_blank" rel="external">BIOS</a>(Basic Input Output System：基本输入输出系统)，它是一组固化到计算机内主板上一个ROM芯片上的程序，它保存着计算机最重要的基本输入输出的程序、开机后自检程序和系统自启动程序，它可从CMOS中读写系统设置的具体信息。 其主要功能是为计算机提供最底层的、最直接的硬件设置和控制。当今，此系统已成为一些病毒木马的目标。一旦此系统被破坏，其后果不堪设想。<br><a id="more"></a></p>
+<h4 id="引导">引导</h4><p>　　　引导(bootstrapping)是启动计算机的标准术语。在引导过程中，内核被加载到内存中并开始执行。各种初始化任务得意执行之后，用户就可以开始使用系统了。<br>　　　当打开计算机时，计算机执行存储在ROM中的引导代码，这些代码接下来尝试确定如何加载并启动内核。内核检测系统的硬件，然后产生系统的init进程，这个进程总是PID1。在出现登陆提示符以前，要完成几项工作。系统必须检查并安装文件系统，而且系统的守护进程必须启动起来，这些步骤是由init进程按照顺序执行的一系列shell脚本来管理的。启动脚本由于他们的命名方式而经常被称作”rc文件”，”rc”代表”runcom”或”run command”。</p>
+<h5 id="引导过程的步骤">引导过程的步骤</h5><pre><code><span class="number">1.</span>加载并初始化内核。
+<span class="number">2.</span>检测和配置设备。
+<span class="number">3.</span>创建内核线程。
+<span class="number">4.</span>操作员干预<span class="comment">(仅用于手工引导)</span>。
+<span class="number">5.</span>执行系统启动脚本。
+<span class="number">6.</span>多用户模式运行。
+</code></pre><h5 id="初始化内核">初始化内核</h5><p>　　　Linux内核本身就是一个程序，系统引导过程中的第一项任务就是把这个程序载入到内存中去，以便执行它。内核的路径名称常常是/vmlinuz或者/boot/vmlinuz。Linux系统实现了一个有两个阶段的加载过程。在第一阶段中，系统ROM把一个小的引导程序从磁盘载入到内存中。然后，这个程序再安排载入内核。内核执行内存检测来确定有多少RAM可用。内核的一些内部数据结构按照静态方式分配其内存量，因此，当内核启动时，它就为自己划分出一块固定大小的实存空间。这块空间保留给内核使用。用户及进程不能使用。内核在控制台打印一条信息，报告物理内存的总量以及用户进程可用的内存量。</p>
+<h5 id="配置硬件">配置硬件</h5><p>　　　内核执行的第一批任务包括检查机器的环境以及确定机器有什么硬件。当您未自己的系统构建内核时候，要告诉内核，它会找到哪些硬件设备。当内核开始执行时，它试图找到并初始化已经告诉它的每一个设备。大多数内核为他们找到的每个设备打印出一行专门信息。</p>
+<h5 id="内核线程">内核线程</h5><p>　　　一旦完成了基本的初始化任务，内核就在用户空间创建几个”自发”的进程。它们之所以被称作是自发进程，是因为这些进程不是通过系统正规的fork机制所创建的。一旦创建完毕自发进程，内核在引导阶段的任务就完成了。不过，处理基本操作的进程还一个都没有创建，而且大多数Linux守护进程也都没有启动。这些任务都是由init来负责的。</p>
+<h5 id="执行启动脚本">执行启动脚本</h5><p>　　　到了系统准备运行其启动脚本的时候，我们就能看出它是Linux系统了。尽管它看起来还不很像全部启动完毕的系统，但在接下来的启动过程中已经没有什么”奇妙”步骤了。启动脚本就是普通的shell脚本，由init根据一定的算法来选择并运行它们，尽管算法有时候有些复杂，但还是相当容易理解的。</p>
+<h4 id="启动脚本">启动脚本</h4><pre><code>1.设置计算机名称；
+2.设置时区；
+3.采用fsck检查磁盘；
+4.安装系统的磁盘；
+5.从/tmp目录删除旧文件；
+6.配置网络接口；
+7.启动守护进程和网络服务。
+</code></pre><h4 id="关机">关机</h4><p>　　　关机的多种做法:<br>           　1.shutdown命令；<br>           　2.halt和reboot命令；<br>           　3.telinit来改变init的运行级；<br>           　4.poweroff命令关闭电源；</p>
+<h4 id="总结">总结</h4><p>　　　开机引导部分知识比较晦涩难懂，通过博客记录的方式加深理解，而且也方便后面再次回看复习加深理解。</p>
+
+      
+    </div>
+
+    <div class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/linux/"> #linux </a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/11/09/mac配置纪录/">mac配置纪录</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/10/21/Linux学习要点/">Linux学习要点</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </div>
+  </div>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+
+    
+      <div class="comments" id="comments">
+        
+          <div class="ds-thread" data-thread-key="2015/10/24/Linux引导和关机/"
+               data-title="引导和关机" data-url="http://xdushepherd.me/2015/10/24/Linux引导和关机/">
+          </div>
+        
+      </div>
+    
+  </div>
+
+
+        </div>
+
+        
+      </div>
+
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview">
+        <div class="site-author motion-element">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="xdushepherd" />
+          <p class="site-author-name">xdushepherd</p>
+        </div>
+        <p class="site-description motion-element">最是人间留不住，朱颜辞镜花辞树</p>
+        <div class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">19</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            <a href="/categories">
+              <span class="site-state-item-count">7</span>
+              <span class="site-state-item-name">分类</span>
+              </a>
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">20</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </div>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+              <a href="https://github.com/xdushepherd" target="_blank">GitHub</a>
+            </span>
+            
+              <span class="links-of-author-item">
+              <a href="http://www.zhihu.com/people/xdushepherd" target="_blank">ZhiHu</a>
+            </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+        
+      </div>
+
+      
+        <div class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#前期知识点"><span class="nav-number">1.</span> <span class="nav-text">前期知识点</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#ROM"><span class="nav-number">1.1.</span> <span class="nav-text">ROM</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#RAM"><span class="nav-number">1.2.</span> <span class="nav-text">RAM</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#BIOS"><span class="nav-number">1.3.</span> <span class="nav-text">BIOS</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#引导"><span class="nav-number">2.</span> <span class="nav-text">引导</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#引导过程的步骤"><span class="nav-number">2.1.</span> <span class="nav-text">引导过程的步骤</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#初始化内核"><span class="nav-number">2.2.</span> <span class="nav-text">初始化内核</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#配置硬件"><span class="nav-number">2.3.</span> <span class="nav-text">配置硬件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#内核线程"><span class="nav-number">2.4.</span> <span class="nav-text">内核线程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#执行启动脚本"><span class="nav-number">2.5.</span> <span class="nav-text">执行启动脚本</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#启动脚本"><span class="nav-number">3.</span> <span class="nav-text">启动脚本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#关机"><span class="nav-number">4.</span> <span class="nav-text">关机</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </div>
+      
+
+    </div>
+  </div>
+
+
+    </div>
+
+    <div id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; &nbsp; 
+  2016
+  <span class="with-love">
+    <i class="icon-heart"></i>
+  </span>
+  <span class="author">xdushepherd</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+
+      </div>
+    </div>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.4"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.4"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.4" id="motion.global"></script>
+
+
+
+  <script type="text/javascript" src="/js/search-toggle.js"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.4" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var $sidebarInner = $('.sidebar-inner');
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.didShow', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+          var self = this;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      $(indicator).velocity('stop').velocity({
+        opacity: action === 'show' ? 0.4 : 0
+      }, { duration: 100 });
+    }
+
+  });
+</script>
+
+
+  <script type="text/javascript" id="sidebar.nav">
+    $(document).ready(function () {
+      var html = $('html');
+
+      $('.sidebar-nav li').on('click', function () {
+        var item = $(this);
+        var activeTabClassName = 'sidebar-nav-active';
+        var activePanelClassName = 'sidebar-panel-active';
+        if (item.hasClass(activeTabClassName)) {
+          return;
+        }
+
+        var currentTarget = $('.' + activePanelClassName);
+        var target = $('.' + item.data('target'));
+
+        currentTarget.velocity('transition.slideUpOut', 200, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', 200)
+            .addClass(activePanelClassName);
+        });
+
+        item.siblings().removeClass(activeTabClassName);
+        item.addClass(activeTabClassName);
+      });
+
+      $('.post-toc a').on('click', function (e) {
+        e.preventDefault();
+        var offset = $(escapeSelector(this.getAttribute('href'))).offset().top;
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        });
+      });
+
+      // Expand sidebar on post detail page by default, when post has a toc.
+      var $tocContent = $('.post-toc-content');
+      if (isDesktop() && CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    });
+  </script>
+
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+    });
+  </script>
+
+  
+
+  
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"shepherd"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+
+
+  
+  
+
+</body>
+</html>

@@ -1,0 +1,622 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.4"/>
+
+
+    <meta name="description" content="最是人间留不住，朱颜辞镜花辞树" />
+
+
+
+  <meta name="keywords" content="模块，modules," />
+
+
+
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.4" />
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    analytics: {
+      google: ''
+    },
+    sidebar: 'hide'
+  };
+</script>
+
+
+
+
+  <title> Node.js官网API阅读之模块阅读记录 // Polishing </title>
+</head>
+
+<body>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <div id="header" class="header">
+      <div class="header-inner">
+        <h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand">
+      <span class="logo">
+        <i class="icon-logo"></i>
+      </span>
+      <span class="site-title">Polishing</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<div class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/">
+            <i class="menu-item-icon icon-home"></i> <br />
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            <i class="menu-item-icon icon-categories"></i> <br />
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            <i class="menu-item-icon icon-archives"></i> <br />
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            <i class="menu-item-icon icon-tags"></i> <br />
+            标签
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+</div>
+
+
+      </div>
+    </div>
+
+    <div id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              Node.js官网API阅读之模块阅读记录
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015-11-10
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/node-js/">node.js</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/11/10/Node-js官网API阅读之模块阅读记录/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/11/10/Node-js官网API阅读之模块阅读记录/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <h3 id="概述">概述</h3><p>   Node.js拥有一套简单的模块加载系统。在Node.js中，文件和模块之间是一一对应的关系。在接下来的例子中，foo.js和circle.js处于同一个文件夹下面，以foo.js文件夹在模块circle.js模块为例，展示一下模块加载机制。</p>
+<h3 id="基本定义和使用">基本定义和使用</h3><p>foo.js中的内容：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> circle = <span class="built_in">require</span>(<span class="string">'./circle.js'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'The area of a circle of radius 4 is'</span> + circle.area(<span class="number">4</span>));</span><br></pre></td></tr></table></figure></p>
+<p>circle.js的内容：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> PI＝ <span class="built_in">Math</span>.PI;</span><br><span class="line"></span><br><span class="line">exports.area = <span class="function"><span class="keyword">function</span>(<span class="params">r</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">return</span> PI * r * r;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">exports.circumference = <span class="function"><span class="keyword">function</span>(<span class="params">r</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">2</span> * PI * r;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<a id="more"></a>
+<p>circle.js模块则已经输出了area()和circumference()两个函数。通过将模块中的函数和对象添加到exports这个特殊对象中，我们就实现了将其添加到该模块的根路径中，以便接下来的使用。</p>
+<p>模块定义文件中的本地变量是私有的，看起来好像是模块被一个函数包裹起来的。在上面的例子中，变量PI就是circle.js的私有变量。</p>
+<p>如果你想要你设计的模块的根元素输出一个函数（比如说一个类构造器）或者你想要一次赋值就得到一个完整的对象而不是每次创建一个属性，那就把构造函数赋值给module.exports,而不是exports。</p>
+<p>下面，bar.js使用了square模块，该模块就是输出了一个构造器。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> square = <span class="built_in">require</span>(<span class="string">'./square.js'</span>);</span><br><span class="line"><span class="keyword">var</span> mySquare = square(<span class="number">2</span>);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'The area of my square is '</span> + mySquare.area());</span><br></pre></td></tr></table></figure></p>
+<p>square.js的内容<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span>(<span class="params">width</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">return</span> &#123;</span><br><span class="line">		area: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">			<span class="keyword">return</span> width * width;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="循环引用">循环引用</h3><p>当我们使用了循环引用的时候，一个模块可能在其没有完成执行动作的时候就返回。</p>
+<p>来看一下下面这种情况：</p>
+<p>a.js<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">'a starting'</span>);</span><br><span class="line">exports.done = <span class="literal">false</span>;</span><br><span class="line"><span class="keyword">var</span> b = <span class="built_in">require</span>(<span class="string">'./b.js'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'in a , b.done = %j'</span>,b.done);</span><br><span class="line">exports.done = <span class="literal">true</span>;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'a done'</span>);</span><br></pre></td></tr></table></figure></p>
+<p>b.js<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">'b starting'</span>);</span><br><span class="line">exports.done = <span class="literal">false</span>;</span><br><span class="line"><span class="keyword">var</span> a = <span class="built_in">require</span>(<span class="string">'./a.js'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'in b, a.done = %j'</span>, a.done);</span><br><span class="line">exports.done = <span class="literal">true</span>;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'b done'</span>);</span><br></pre></td></tr></table></figure></p>
+<p>main.js<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">'main starting'</span>);</span><br><span class="line"><span class="keyword">var</span> a = <span class="built_in">require</span>(<span class="string">'./a.js'</span>);</span><br><span class="line"><span class="keyword">var</span> b = <span class="built_in">require</span>(<span class="string">'./b.js'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'in main, a.done=%j, b.done=%j'</span>, a.done, b.done);</span><br></pre></td></tr></table></figure></p>
+<p>主文件main.js加载a.js,然后a.js又夹在b.js。之后， b.j尝试加载a.js。为了防止出现无限循环的调用，一个a.js的不完全拷贝将exports对象返回到b.js模型中去。之后b.js完成夹在，b.js将它的exports对象提供给a.js模块。</p>
+<p>当main.js将两个模块都加载完成之后，a和b模块都完成了加载。这个小程序的输出如下所示：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ node main.js</span><br><span class="line">main starting</span><br><span class="line">a starting</span><br><span class="line">b startging</span><br><span class="line"><span class="keyword">in</span> b,a.done = <span class="literal">false</span></span><br><span class="line">b done</span><br><span class="line"><span class="keyword">in</span> a,b.done = <span class="literal">true</span></span><br><span class="line">a done</span><br><span class="line"><span class="keyword">in</span> main,a.done = <span class="literal">true</span> ,b.done = <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<h3 id="核型模块">核型模块</h3><p>Node.js拥有一些被编译成二进制文件的模块。这些模块在这个文档的其他部分有详细的介绍。</p>
+<p>核心模块被定义在Node.js源代码中的／lib文件夹中。</p>
+<p>当你使用require()来夹在模块的时候，核心模块会优先被夹在。举个例子，require(‘http’)总是会调用核心的内建HTTP模块，即使是有一个取名http的文件。</p>
+<h3 id="文件模块">文件模块</h3><p>如果指定名字的模块没有找到的话，Node.js会尝试依次加载带有.js，.json，.node扩展名的文件</p>
+<p>.js文件时javascript语言的文本文件，.json则是被当作JSON数据解析的文本文档，.node文件则是一些通过dlopen加载的第三方的编译文件（这一块翻译的不好）。</p>
+<p>如果给定的路径并不存在的话，require()方法酒会抛出一个错误，并将代码属性设置为”MODULE_NOT_FOUND”。</p>
+<h3 id="从node_modules文件夹加载模块">从node_modules文件夹加载模块</h3><p>如果require()方法接受的标志符病不是一个原生模块，而且其路径也不是以’/‘,’../‘或者’./‘开头的话，Node.js酒会开始在当前模块的父文件夹的node_modules中加载指定的模块。</p>
+<p>如果在父文件夹中并没有找到，那么它就会再向上一级文件夹中的node_modules文件夹中寻找，直到找到系统的根目录下的node_modules文件夹中。</p>
+<p>举个例子，如果位于’/home/ry/projects/foo.js’的问价调用了require(‘bar.js’),那么Node.js酒会按照下面这种方式依次寻找bar.js文件：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/home/ry/projects/node_modules/bar.js</span><br><span class="line">/home/ry/node_modules/bar.js</span><br><span class="line">/home/node_modules/bar.js</span><br><span class="line">/node_modules/bar.js</span><br></pre></td></tr></table></figure>
+<p>这种机制允许程序定位其依赖，保证程序不崩溃。</p>
+<h3 id="文件夹作为一个模块">文件夹作为一个模块</h3><p>将程序和类库组织在一个自包含的文件夹里时比较方便的，只需要提供为一个进入类库的入口点即可。有三种讲文件夹作为参数传递给require()的方法。</p>
+<p>第一种是在文件夹的根目录中创建一个package.json，这个文件中将声明这个类库的主模块。下面是一个package.json的例子：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#123; <span class="string">"name"</span> : <span class="string">"some-library"</span>,</span><br><span class="line"> 	<span class="string">"main"</span> : <span class="string">"./lib/some-library.js"</span> &#125;</span><br></pre></td></tr></table></figure>
+<p>这样，我们就可以通过require(‘./some-library’)来实现对./some-library/lib/some-library.js的调用。</p>
+<p>如果没有文件夹中并没有package.json文件的存在，那么Node.js会尝试调用index.js或者index.node来实现调用。举例来说<br>，如果上面的例子中没有package.json文件的存在，那么，require(‘./some-library’)就会尝试加载</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./some-library/index.js</span><br><span class="line">./some-library/index.node</span><br></pre></td></tr></table></figure>
+<p>缓存</p>
+<p>当一个模块第一次被加载之后，该模块就被缓存了。这意味着在同一个文件下，每一次对同一模块的调用实际上得到的是同一个对象。<br>队医require(‘foo’)的多次调用病不会引起该模块代码被多次执行。这是一个非常重要的特性。有了这种特性，部分执行的对象可以被返回，继而可以允许过渡的依赖被加载甚至当他们会引起循环调用。</p>
+<p>如果你想要一个模块的代码多次执行，那就使该模块返回一个函数，然后多次执行函数即可。</p>
+<h3 id="模块对象">模块对象</h3><p>在每一模块文件中，module变量时一个对代表当前模块的对象的饮用。为了方便，module.exports可以通过exports来访问。module实际上不是一个全局量而是每一个模块的本地变量。</p>
+<h4 id="moudle-exports">moudle.exports</h4><p>moudle.exports对象是有Module系统创建的对象。有时候，这一点并不被接受，很多开发者希望他们的模块是模个类的实力对象。为了达到这个目的，我们可以讲想要输出的对象赋值给module.exports.请注意，将对象赋值给exports对象会简单的将本地变量重新绑定，这往往不是你想要的结果。</p>
+<h3 id="总结">总结</h3><p>这是对Node.js官网文章的简单翻译，一方面难免出错，另外一方面，就是会有遗漏，如果你们感兴趣的话，可以和我一起翻译官网的文档。</p>
+
+      
+    </div>
+
+    <div class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/模块，modules/"> #模块，modules </a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/11/12/Node-js官网API阅读之事件模块阅读记录/">Node.js官网API阅读之事件模块阅读记录</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/11/09/mac配置纪录/">mac配置纪录</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </div>
+  </div>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+
+    
+      <div class="comments" id="comments">
+        
+          <div class="ds-thread" data-thread-key="2015/11/10/Node-js官网API阅读之模块阅读记录/"
+               data-title="Node.js官网API阅读之模块阅读记录" data-url="http://xdushepherd.me/2015/11/10/Node-js官网API阅读之模块阅读记录/">
+          </div>
+        
+      </div>
+    
+  </div>
+
+
+        </div>
+
+        
+      </div>
+
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview">
+        <div class="site-author motion-element">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="xdushepherd" />
+          <p class="site-author-name">xdushepherd</p>
+        </div>
+        <p class="site-description motion-element">最是人间留不住，朱颜辞镜花辞树</p>
+        <div class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">19</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            <a href="/categories">
+              <span class="site-state-item-count">7</span>
+              <span class="site-state-item-name">分类</span>
+              </a>
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">20</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </div>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+              <a href="https://github.com/xdushepherd" target="_blank">GitHub</a>
+            </span>
+            
+              <span class="links-of-author-item">
+              <a href="http://www.zhihu.com/people/xdushepherd" target="_blank">ZhiHu</a>
+            </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+        
+      </div>
+
+      
+        <div class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基本定义和使用"><span class="nav-number">2.</span> <span class="nav-text">基本定义和使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#循环引用"><span class="nav-number">3.</span> <span class="nav-text">循环引用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#核型模块"><span class="nav-number">4.</span> <span class="nav-text">核型模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文件模块"><span class="nav-number">5.</span> <span class="nav-text">文件模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从node_modules文件夹加载模块"><span class="nav-number">6.</span> <span class="nav-text">从node_modules文件夹加载模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#文件夹作为一个模块"><span class="nav-number">7.</span> <span class="nav-text">文件夹作为一个模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模块对象"><span class="nav-number">8.</span> <span class="nav-text">模块对象</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#moudle-exports"><span class="nav-number">8.1.</span> <span class="nav-text">moudle.exports</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">9.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </div>
+      
+
+    </div>
+  </div>
+
+
+    </div>
+
+    <div id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; &nbsp; 
+  2016
+  <span class="with-love">
+    <i class="icon-heart"></i>
+  </span>
+  <span class="author">xdushepherd</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+
+      </div>
+    </div>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.4"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.4"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.4" id="motion.global"></script>
+
+
+
+  <script type="text/javascript" src="/js/search-toggle.js"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.4" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var $sidebarInner = $('.sidebar-inner');
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.didShow', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+          var self = this;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      $(indicator).velocity('stop').velocity({
+        opacity: action === 'show' ? 0.4 : 0
+      }, { duration: 100 });
+    }
+
+  });
+</script>
+
+
+  <script type="text/javascript" id="sidebar.nav">
+    $(document).ready(function () {
+      var html = $('html');
+
+      $('.sidebar-nav li').on('click', function () {
+        var item = $(this);
+        var activeTabClassName = 'sidebar-nav-active';
+        var activePanelClassName = 'sidebar-panel-active';
+        if (item.hasClass(activeTabClassName)) {
+          return;
+        }
+
+        var currentTarget = $('.' + activePanelClassName);
+        var target = $('.' + item.data('target'));
+
+        currentTarget.velocity('transition.slideUpOut', 200, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', 200)
+            .addClass(activePanelClassName);
+        });
+
+        item.siblings().removeClass(activeTabClassName);
+        item.addClass(activeTabClassName);
+      });
+
+      $('.post-toc a').on('click', function (e) {
+        e.preventDefault();
+        var offset = $(escapeSelector(this.getAttribute('href'))).offset().top;
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        });
+      });
+
+      // Expand sidebar on post detail page by default, when post has a toc.
+      var $tocContent = $('.post-toc-content');
+      if (isDesktop() && CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    });
+  </script>
+
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+    });
+  </script>
+
+  
+
+  
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"shepherd"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+
+
+  
+  
+
+</body>
+</html>

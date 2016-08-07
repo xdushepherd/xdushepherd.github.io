@@ -1,0 +1,598 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.4"/>
+
+
+    <meta name="description" content="最是人间留不住，朱颜辞镜花辞树" />
+
+
+
+  <meta name="keywords" content="调试，debugger," />
+
+
+
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.4" />
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    analytics: {
+      google: ''
+    },
+    sidebar: 'hide'
+  };
+</script>
+
+
+
+
+  <title> Node.js官方API阅读之Debugger模块阅读记录 // Polishing </title>
+</head>
+
+<body>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <div id="header" class="header">
+      <div class="header-inner">
+        <h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand">
+      <span class="logo">
+        <i class="icon-logo"></i>
+      </span>
+      <span class="site-title">Polishing</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<div class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/">
+            <i class="menu-item-icon icon-home"></i> <br />
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            <i class="menu-item-icon icon-categories"></i> <br />
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            <i class="menu-item-icon icon-archives"></i> <br />
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            <i class="menu-item-icon icon-tags"></i> <br />
+            标签
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+</div>
+
+
+      </div>
+    </div>
+
+    <div id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              Node.js官方API阅读之Debugger模块阅读记录
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015-11-13
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/node-js/">node.js</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/11/13/Node-js官方API阅读之Debugger模块阅读记录/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/11/13/Node-js官方API阅读之Debugger模块阅读记录/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <h3 id="概述">概述</h3><p>V8引擎自带了一个扩展的debugger，这个调试工具可以通过简单的TCP协议实现在进程外访问程序。Node.js为这个调试器实现了一个内建的客户端。想要使用这个客户端，你只需要在在Node.js文件执行时添加一个debug参数就可以；</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$node debug myscript.js</span><br><span class="line">&lt; <span class="keyword">debugger</span> listening on port <span class="number">5858</span></span><br><span class="line">connecting... ok</span><br><span class="line"><span class="keyword">break</span> <span class="keyword">in</span> /home/indutny/Code/git/indutny/myscript.js:<span class="number">1</span></span><br><span class="line">  <span class="number">1</span> x = <span class="number">5</span>;</span><br><span class="line">  <span class="number">2</span> setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="number">3</span>   <span class="keyword">debugger</span>;</span><br><span class="line">debug&gt;</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>Node.js调试工具客户端不支持所有的命令，但是简单的单步测试和查看时可以实现的。通过在源代码中添加’debugger;’语句，你就添加了一个断点。</p>
+<p>举个例子,假设有这样一个myscript.js文件:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// myscript.js</span></span><br><span class="line">x = <span class="number">5</span>;</span><br><span class="line">setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">debugger</span>;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">"world"</span>);</span><br><span class="line">&#125;, <span class="number">1000</span>);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"hello"</span>);</span><br></pre></td></tr></table></figure></p>
+<p>那么当调试器开始运行的时候，会在第四行断开:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">% node debug myscript.js</span><br><span class="line">&lt; <span class="keyword">debugger</span> listening on port <span class="number">5858</span></span><br><span class="line">connecting... ok</span><br><span class="line"><span class="keyword">break</span> <span class="keyword">in</span> /home/indutny/Code/git/indutny/myscript.js:<span class="number">1</span></span><br><span class="line">  <span class="number">1</span> x = <span class="number">5</span>;</span><br><span class="line">  <span class="number">2</span> setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="number">3</span>   <span class="keyword">debugger</span>;</span><br><span class="line">debug&gt; cont</span><br><span class="line">&lt; hello</span><br><span class="line"><span class="keyword">break</span> <span class="keyword">in</span> /home/indutny/Code/git/indutny/myscript.js:<span class="number">3</span></span><br><span class="line">  <span class="number">1</span> x = <span class="number">5</span>;</span><br><span class="line">  <span class="number">2</span> setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="number">3</span>   <span class="keyword">debugger</span>;</span><br><span class="line">  <span class="number">4</span>   <span class="built_in">console</span>.log(<span class="string">"world"</span>);</span><br><span class="line">  <span class="number">5</span> &#125;, <span class="number">1000</span>);</span><br><span class="line">debug&gt; next</span><br><span class="line"><span class="keyword">break</span> <span class="keyword">in</span> /home/indutny/Code/git/indutny/myscript.js:<span class="number">4</span></span><br><span class="line">  <span class="number">2</span> setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="number">3</span>   <span class="keyword">debugger</span>;</span><br><span class="line">  <span class="number">4</span>   <span class="built_in">console</span>.log(<span class="string">"world"</span>);</span><br><span class="line">  <span class="number">5</span> &#125;, <span class="number">1000</span>);</span><br><span class="line">  <span class="number">6</span> <span class="built_in">console</span>.log(<span class="string">"hello"</span>);</span><br><span class="line">debug&gt; repl</span><br><span class="line">Press Ctrl + C to leave debug repl</span><br><span class="line">&gt; x</span><br><span class="line"><span class="number">5</span></span><br><span class="line">&gt; <span class="number">2</span>+<span class="number">2</span></span><br><span class="line"><span class="number">4</span></span><br><span class="line">debug&gt; next</span><br><span class="line">&lt; world</span><br><span class="line"><span class="keyword">break</span> <span class="keyword">in</span> /home/indutny/Code/git/indutny/myscript.js:<span class="number">5</span></span><br><span class="line">  <span class="number">3</span>   <span class="keyword">debugger</span>;</span><br><span class="line">  <span class="number">4</span>   <span class="built_in">console</span>.log(<span class="string">"world"</span>);</span><br><span class="line">  <span class="number">5</span> &#125;, <span class="number">1000</span>);</span><br><span class="line">  <span class="number">6</span> <span class="built_in">console</span>.log(<span class="string">"hello"</span>);</span><br><span class="line">  <span class="number">7</span></span><br><span class="line">debug&gt; quit</span><br><span class="line">%</span><br></pre></td></tr></table></figure>
+<p>在上面使用到的命令中，repl命令允许你运行代码。next命令则使得程序继续向下一行执行。其他的一些命令接下来会为大家做介绍。在调试环境下，输入help命令可以看到其他可用命令及其介绍。</p>
+<h3 id="Watchers">Watchers</h3><p>你可以在调试代码的过程中观察表达式及变量。在每一个断点上，在watchers列表的表达式，会在当前上下文中被执行。，并且展示断点前的代码列表。</p>
+<p>输入watch(‘my_expression’).watchers来开始观察一个表达式，输入unwatch(‘my_expression’)来移除一个watcher。</p>
+<h3 id="命令介绍">命令介绍</h3><h4 id="步骤执行">步骤执行</h4><p>cont,c-继续执行稳健<br>next，n－执行一行<br>step, s - Step in<br>out, o - Step out<br>pause - Pause running code (like pause button in Developer Tools)</p>
+<h4 id="断点">断点</h4><p>setBreakpoint(),sb()-在当前行设置断点<br>setBreakpoint(line),sb(line)-在指定行设置断点。<br>setBreakpoint(‘fn()’),sb(‘fn()’)-在函数题定义的第一句处设置断点<br>setBreakpoint(‘script.js’,1),sb()-在script.js的第一行设置断点<br>clearBreakpoint(‘script.js’,1),cb(…)-清除在script.js的第一行设置的断点。</p>
+<h3 id="info">info</h3><p>backtrace,bt-打印当前已经执行的代码信息。<br>list(5)-列出当前行之前和之后5行代码<br>watch(expr)-将一个表达式添加到监测列表<br>unwatch(expr)-将表达式从检测列表中移除<br>watchers-列出所有的watchers<br>repl-打开一个调试器的repl，在调试脚本的上下文中执行语句。</p>
+<h3 id="执行控制">执行控制</h3><p>run-运行脚本<br>restart-重启脚本<br>kill-杀死当前脚本。</p>
+<h3 id="Various">Various</h3><p>scripts－列出已经加载的脚本<br>version-展示V8引擎的版本。</p>
+<h3 id="后记">后记</h3><p>阅读的过程中试着调试代码，其实也就理解了诸如cont,next,list(n),sb()等等一些命令的用法，对step，out，pause等等命令的用途并没有体会。希望在以后项目的开发过程中可以有所体会。</p>
+
+      
+    </div>
+
+    <div class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/调试，debugger/"> #调试，debugger </a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/11/14/Node-js官网API阅读之DNS模块阅读纪录/">Node.js官网API阅读之DNS模块鱼肚纪录</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/11/12/Node-js官网API阅读之事件模块阅读记录/">Node.js官网API阅读之事件模块阅读记录</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </div>
+  </div>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+
+    
+      <div class="comments" id="comments">
+        
+          <div class="ds-thread" data-thread-key="2015/11/13/Node-js官方API阅读之Debugger模块阅读记录/"
+               data-title="Node.js官方API阅读之Debugger模块阅读记录" data-url="http://xdushepherd.me/2015/11/13/Node-js官方API阅读之Debugger模块阅读记录/">
+          </div>
+        
+      </div>
+    
+  </div>
+
+
+        </div>
+
+        
+      </div>
+
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview">
+        <div class="site-author motion-element">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="xdushepherd" />
+          <p class="site-author-name">xdushepherd</p>
+        </div>
+        <p class="site-description motion-element">最是人间留不住，朱颜辞镜花辞树</p>
+        <div class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">19</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            <a href="/categories">
+              <span class="site-state-item-count">7</span>
+              <span class="site-state-item-name">分类</span>
+              </a>
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">20</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </div>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+              <a href="https://github.com/xdushepherd" target="_blank">GitHub</a>
+            </span>
+            
+              <span class="links-of-author-item">
+              <a href="http://www.zhihu.com/people/xdushepherd" target="_blank">ZhiHu</a>
+            </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+        
+      </div>
+
+      
+        <div class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Watchers"><span class="nav-number">2.</span> <span class="nav-text">Watchers</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#命令介绍"><span class="nav-number">3.</span> <span class="nav-text">命令介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#步骤执行"><span class="nav-number">3.1.</span> <span class="nav-text">步骤执行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#断点"><span class="nav-number">3.2.</span> <span class="nav-text">断点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#info"><span class="nav-number">4.</span> <span class="nav-text">info</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#执行控制"><span class="nav-number">5.</span> <span class="nav-text">执行控制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Various"><span class="nav-number">6.</span> <span class="nav-text">Various</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#后记"><span class="nav-number">7.</span> <span class="nav-text">后记</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </div>
+      
+
+    </div>
+  </div>
+
+
+    </div>
+
+    <div id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; &nbsp; 
+  2016
+  <span class="with-love">
+    <i class="icon-heart"></i>
+  </span>
+  <span class="author">xdushepherd</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+
+      </div>
+    </div>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.4"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.4"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.4" id="motion.global"></script>
+
+
+
+  <script type="text/javascript" src="/js/search-toggle.js"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.4" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var $sidebarInner = $('.sidebar-inner');
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.didShow', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+          var self = this;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      $(indicator).velocity('stop').velocity({
+        opacity: action === 'show' ? 0.4 : 0
+      }, { duration: 100 });
+    }
+
+  });
+</script>
+
+
+  <script type="text/javascript" id="sidebar.nav">
+    $(document).ready(function () {
+      var html = $('html');
+
+      $('.sidebar-nav li').on('click', function () {
+        var item = $(this);
+        var activeTabClassName = 'sidebar-nav-active';
+        var activePanelClassName = 'sidebar-panel-active';
+        if (item.hasClass(activeTabClassName)) {
+          return;
+        }
+
+        var currentTarget = $('.' + activePanelClassName);
+        var target = $('.' + item.data('target'));
+
+        currentTarget.velocity('transition.slideUpOut', 200, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', 200)
+            .addClass(activePanelClassName);
+        });
+
+        item.siblings().removeClass(activeTabClassName);
+        item.addClass(activeTabClassName);
+      });
+
+      $('.post-toc a').on('click', function (e) {
+        e.preventDefault();
+        var offset = $(escapeSelector(this.getAttribute('href'))).offset().top;
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        });
+      });
+
+      // Expand sidebar on post detail page by default, when post has a toc.
+      var $tocContent = $('.post-toc-content');
+      if (isDesktop() && CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    });
+  </script>
+
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+    });
+  </script>
+
+  
+
+  
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"shepherd"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+
+
+  
+  
+
+</body>
+</html>

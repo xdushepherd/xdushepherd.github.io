@@ -1,0 +1,621 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.4"/>
+
+
+    <meta name="description" content="最是人间留不住，朱颜辞镜花辞树" />
+
+
+
+  <meta name="keywords" content="MVC,javascript,前端框架," />
+
+
+
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.4" />
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    analytics: {
+      google: ''
+    },
+    sidebar: 'hide'
+  };
+</script>
+
+
+
+
+  <title> ember.js学习笔记 // Polishing </title>
+</head>
+
+<body>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <div id="header" class="header">
+      <div class="header-inner">
+        <h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand">
+      <span class="logo">
+        <i class="icon-logo"></i>
+      </span>
+      <span class="site-title">Polishing</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<div class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/">
+            <i class="menu-item-icon icon-home"></i> <br />
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            <i class="menu-item-icon icon-categories"></i> <br />
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            <i class="menu-item-icon icon-archives"></i> <br />
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            <i class="menu-item-icon icon-tags"></i> <br />
+            标签
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+</div>
+
+
+      </div>
+    </div>
+
+    <div id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              ember.js学习笔记
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015-10-08
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/前端/">前端</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/10/08/ember-js学习笔记/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/10/08/ember-js学习笔记/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <h4 id="背景">背景</h4><p>作为一个学习欲望极其强烈的码农，有时间就要涉猎一下大家极具争议性的热门技术。之前详细学习了AngularJS的相关概念，也在自己的简书中有所记录，这次，就来看看，在Rails社区中呼声很高的ember.js框架，看很多帖子中提到ember.js框架比AngularJS框架要怎么怎么好之类的话。好奇心的驱使，就在网上找到了ember.js的<a href="http://www.emberjs.cn/guides/getting-started/" target="_blank" rel="external">入门指南</a>，花了点时间，了解一下这个框架的相关概念。</p>
+<a id="more"></a>
+<p>2011年，Yehuda Katz（他是jQuery项目和Ruby on Rails项目的核心贡献者）发起了EmberJS项目，因此Ember.js与Rails的很多概念上有相似之处。而我之前学习Rails开发框架时间很久，对其的相关概念理解也较为深刻，因此，在理解Ember.js的相关概念的时候也并不困难。</p>
+<h4 id="相关概念">相关概念</h4><p>作为一个现代框架，Ember.js框架和其他前端和后端框架一样，都遵循MVC设计模式。在Ember.js中，与V(view)相关的概念有<a href="http://www.emberjs.cn/guides/templates/the-application-template/" target="_blank" rel="external">模板</a>和<a href="http://www.emberjs.cn/guides/components/defining-a-component/" target="_blank" rel="external">组件</a>；与M(model)相关的概念则是<a href="http://www.emberjs.cn/guides/models/" target="_blank" rel="external">模型</a>和<a href="http://www.emberjs.cn/guides/object-model/classes-and-instances/" target="_blank" rel="external">对象模型</a>；与C(Controller)相关的概念有<a href="http://www.emberjs.cn/guides/routing/" target="_blank" rel="external">路由</a>，<a href="http://www.emberjs.cn/guides/controllers/" target="_blank" rel="external">控制器</a>。</p>
+<h5 id="模板和组件">模板和组件</h5><ol>
+<li>模板。Ember.js使用<a href="http://handlebarsjs.com/" target="_blank" rel="external">Handlebars模板库</a>增强HTML语言能力，便于开发人员渲染数据。在这一点上，和Rails使用的erb，slim等模板语言还有Laravel框架使用的blade模板语言功能相似，使用过这些语言的开发者可以很快上手Handlebars模板语言。</li>
+</ol>
+<ol>
+<li><p>组件。顾名思义，组件是一段可重用的代码，Ember.js也为组件部分设计了一些独有的语法，可以通过阅读有关源代码来进行快速学习。</p>
+<h5 id="模型和对象模型">模型和对象模型</h5></li>
+<li><p>对象模型。对象模型是Ember.js设计的一种创建Javascript类，继承类，实例化的方法，还包括了属性及其相关操概念。</p>
+</li>
+<li><p>模型。模型是一个定义了需要呈现给用户的数据的属性和行为的类。任何用户往返于应用（或者刷新页面）能看到的内容都需要使用模型来表示。</p>
+</li>
+</ol>
+<h5 id="路由器和控制器">路由器和控制器</h5><ol>
+<li><p>路由器。下面是从Ember.js的入门指南中复制的关于路由功能的一些描述:<br>  1.在任何时刻，你的应用中都会有一个或多个活跃的路由处理器。下列两个条件都可以触发它们：</p>
+<pre><code>用户与视图发生交互，产生事件导致<span class="built_in">URL</span>改变。
+
+用户手动改变<span class="built_in">URL</span>（如: 点击后退按钮），或者是第一次载入页面。
+</code></pre><p>  2.当前的URL发生改变时，活跃的新路由处理器可能会做以下事情：</p>
+<pre><code>根据条件选择跳转到新的<span class="built_in">URL</span>上
+
+更新控制器（controller）以便映射到特定的模型（model）上
+
+更改屏幕（浏览器窗口）上的模板，或者在已存在的出口（outlet）上替换新的模板
+</code></pre></li>
+</ol>
+<p>2.控制器。控制器用于将显示逻辑与模型绑定在一起。通常模型包含需要保存到服务器端的属性，而控制器的属性可以不需要保存至服务器端。</p>
+<h4 id="总结">总结</h4><ol>
+<li><p>从概念上来讲，Ember.js在很多方面和Rails都很相似，当然，Ember.js不需要通过模型对数据库进行操作，而且模型可以通过Ajax获取来自服务器端的数据。粗粗地看过一遍，对其有了一个大概的了解。相信如果日后需要用到Ember.js的时候，可以很快上手把。</p>
+</li>
+<li><p>与AngularJS对比，由于没有使用过这两个框架进行过开发工作。不过，从初步来看，其实AngularJS的指令系统与Ember.js的组件有类似之处。AngularJS以控制器为核心，而Ember.js则以路由为核心。至于优劣，我无从评判。</p>
+</li>
+</ol>
+
+      
+    </div>
+
+    <div class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MVC/"> #MVC </a>
+          
+            <a href="/tags/javascript/"> #javascript </a>
+          
+            <a href="/tags/前端框架/"> #前端框架 </a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/10/19/松本行弘的程序世界笔记/">松本行弘的程序世界笔记</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/08/09/Git-技巧/">Git-别名</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </div>
+  </div>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+
+    
+      <div class="comments" id="comments">
+        
+          <div class="ds-thread" data-thread-key="2015/10/08/ember-js学习笔记/"
+               data-title="ember.js学习笔记" data-url="http://xdushepherd.me/2015/10/08/ember-js学习笔记/">
+          </div>
+        
+      </div>
+    
+  </div>
+
+
+        </div>
+
+        
+      </div>
+
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview">
+        <div class="site-author motion-element">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="xdushepherd" />
+          <p class="site-author-name">xdushepherd</p>
+        </div>
+        <p class="site-description motion-element">最是人间留不住，朱颜辞镜花辞树</p>
+        <div class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">19</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            <a href="/categories">
+              <span class="site-state-item-count">7</span>
+              <span class="site-state-item-name">分类</span>
+              </a>
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">20</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </div>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+              <a href="https://github.com/xdushepherd" target="_blank">GitHub</a>
+            </span>
+            
+              <span class="links-of-author-item">
+              <a href="http://www.zhihu.com/people/xdushepherd" target="_blank">ZhiHu</a>
+            </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+        
+      </div>
+
+      
+        <div class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#相关概念"><span class="nav-number">2.</span> <span class="nav-text">相关概念</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#模板和组件"><span class="nav-number">2.1.</span> <span class="nav-text">模板和组件</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#模型和对象模型"><span class="nav-number">2.2.</span> <span class="nav-text">模型和对象模型</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#路由器和控制器"><span class="nav-number">2.3.</span> <span class="nav-text">路由器和控制器</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </div>
+      
+
+    </div>
+  </div>
+
+
+    </div>
+
+    <div id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; &nbsp; 
+  2016
+  <span class="with-love">
+    <i class="icon-heart"></i>
+  </span>
+  <span class="author">xdushepherd</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+
+      </div>
+    </div>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.4"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.4"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.4" id="motion.global"></script>
+
+
+
+  <script type="text/javascript" src="/js/search-toggle.js"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.4" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var $sidebarInner = $('.sidebar-inner');
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.didShow', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+          var self = this;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      $(indicator).velocity('stop').velocity({
+        opacity: action === 'show' ? 0.4 : 0
+      }, { duration: 100 });
+    }
+
+  });
+</script>
+
+
+  <script type="text/javascript" id="sidebar.nav">
+    $(document).ready(function () {
+      var html = $('html');
+
+      $('.sidebar-nav li').on('click', function () {
+        var item = $(this);
+        var activeTabClassName = 'sidebar-nav-active';
+        var activePanelClassName = 'sidebar-panel-active';
+        if (item.hasClass(activeTabClassName)) {
+          return;
+        }
+
+        var currentTarget = $('.' + activePanelClassName);
+        var target = $('.' + item.data('target'));
+
+        currentTarget.velocity('transition.slideUpOut', 200, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', 200)
+            .addClass(activePanelClassName);
+        });
+
+        item.siblings().removeClass(activeTabClassName);
+        item.addClass(activeTabClassName);
+      });
+
+      $('.post-toc a').on('click', function (e) {
+        e.preventDefault();
+        var offset = $(escapeSelector(this.getAttribute('href'))).offset().top;
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        });
+      });
+
+      // Expand sidebar on post detail page by default, when post has a toc.
+      var $tocContent = $('.post-toc-content');
+      if (isDesktop() && CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    });
+  </script>
+
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+    });
+  </script>
+
+  
+
+  
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"shepherd"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+
+
+  
+  
+
+</body>
+</html>

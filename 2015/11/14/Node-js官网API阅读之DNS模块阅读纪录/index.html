@@ -1,0 +1,608 @@
+<!doctype html>
+<html class="theme-next use-motion theme-next-mist">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.4"/>
+
+
+    <meta name="description" content="最是人间留不住，朱颜辞镜花辞树" />
+
+
+
+  <meta name="keywords" content="DNS，域名系统," />
+
+
+
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.4" />
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: 'Mist',
+    analytics: {
+      google: ''
+    },
+    sidebar: 'hide'
+  };
+</script>
+
+
+
+
+  <title> Node.js官网API阅读之DNS模块鱼肚纪录 // Polishing </title>
+</head>
+
+<body>
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <div id="header" class="header">
+      <div class="header-inner">
+        <h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand">
+      <span class="logo">
+        <i class="icon-logo"></i>
+      </span>
+      <span class="site-title">Polishing</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<div class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/">
+            <i class="menu-item-icon icon-home"></i> <br />
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            <i class="menu-item-icon icon-categories"></i> <br />
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            <i class="menu-item-icon icon-archives"></i> <br />
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            <i class="menu-item-icon icon-tags"></i> <br />
+            标签
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+</div>
+
+
+      </div>
+    </div>
+
+    <div id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content">
+          
+
+  <div id="posts" class="posts-expand">
+    
+
+  <div class="post post-type-normal ">
+    <div class="post-header">
+
+      
+      
+        <h1 class="post-title">
+          
+          
+            
+              Node.js官网API阅读之DNS模块鱼肚纪录
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于 2015-11-14
+        </span>
+
+        
+          <span class="post-category">
+            &nbsp; | &nbsp; 分类于
+            
+              <a href="/categories/node-js/">node.js</a>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+            <span class="post-comments-count">
+            &nbsp; | &nbsp;
+            <a href="/2015/11/14/Node-js官网API阅读之DNS模块阅读纪录/#comments" >
+              <span class="post-comments-count ds-thread-count" data-thread-key="2015/11/14/Node-js官网API阅读之DNS模块阅读纪录/"></span>
+            </a>
+          </span>
+          
+        
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <h3 id="概述">概述</h3><p>使用require(‘dns’)来获取这个模块。这个模块包含了分别属于两个类别的函数。</p>
+<p>第一种，使用操作系统提供的一些服务来完成域名解析的工作，不需要任何网络交流工作。这个目录包含一个函数，那就是dns.lookup()。<br>这是一个解析www.google.com网址的例子<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> dns = <span class="built_in">require</span>(<span class="string">'dns'</span>);</span><br><span class="line"></span><br><span class="line">dns.lookup(<span class="string">'www.google.com'</span>, <span class="function"><span class="keyword">function</span> <span class="title">onLookup</span>(<span class="params">err, addresses, family</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'addresses:'</span>, addresses);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<a id="more"></a>
+<p>第二种，连接到真实DNS服务器来完成域名解析工作的函数，并且这些函数总是使用网络来完成DNS查询。这个类别包含了出国dns.lookup()以外的所有其他函数。这些函数使用的配置项目与dns.lookup()不同。举个例子，这些函数不使用来这/etc/hosts。这些函数会被那些不想使用系统提供的域名解析方法的开发者使用，他们倾向于使用DNS查询来完成域名解析。</p>
+<p>下面是另一个解析’www.google.com’域名的例子。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> dns = <span class="built_in">require</span>(<span class="string">'dns'</span>);</span><br><span class="line"></span><br><span class="line">dns.resolve4(<span class="string">'www.google.com'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">err, addresses</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (err) <span class="keyword">throw</span> err;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'addresses: '</span> + <span class="built_in">JSON</span>.stringify(addresses));</span><br><span class="line"></span><br><span class="line">  addresses.forEach(<span class="function"><span class="keyword">function</span> (<span class="params">a</span>) </span>&#123;</span><br><span class="line">    dns.reverse(a, <span class="function"><span class="keyword">function</span> (<span class="params">err, hostnames</span>) </span>&#123;</span><br><span class="line">      <span class="keyword">if</span> (err) &#123;</span><br><span class="line">        <span class="keyword">throw</span> err;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">'reverse for '</span> + a + <span class="string">': '</span> + <span class="built_in">JSON</span>.stringify(hostnames));</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="dns-lookup(hostname[-options],callback)">dns.lookup(hostname[.options],callback)</h3><p>解析hostname，得到其IPV4或者IPV6地址纪录。options可以是一个对象也可以是一个整数。如果options没有传入，那么IPV4和IPV6都是合法的地址。如果options是一个整数，那就必须是4或者6.</p>
+<p>可选地，options剋一事一个包含三个属性的对象：<br>    familyP{Number}-family纪录。如果存在，那它的值就应该是4或者6，如果不存在，那么IPV4和IPV6都被接受。<br>    hints:{Number}－如果存在，那他必须是一个或者多个被支持的getaddrinfo标志。如果没有出现，那么就不会有标志被传递给getaddrinfo。<br>    all:{ 布尔值 }-如果为true，那么回调函数会把所有的地址返回到一个数组中，否则返回单一一个地址。默认为false。<br>所有的属性都是可选的。下面是一个小例子:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  family: <span class="number">4</span>,</span><br><span class="line">  hints: dns.ADDRCONFIG | dns.V4MAPPED,</span><br><span class="line">  all: <span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>回调函数有三个参数callback(err,address,family)。address时一个代表IP地址的字符串。family时整数4或者6和地址家族的标记。</p>
+<p>如果options的all属性被设置了，那么参数就变成。callback(err,addresses),addresses时一个带有address和family的对象的数组。</p>
+<p>如果出现错误，erro就是一个Error实例对象。请记住，当域名不存在或者当查询失败的时候，err.code都会被设置成’ENOENT’。</p>
+<h3 id="dns-lookupService(address,port,callback)">dns.lookupService(address,port,callback)</h3><p>解析给定的IP地址及端口号，返回起域名和服务。</p>
+<p>回调函数有三个参数，分别是err,hostname,service。域名和服务的参数是字符串(比如说，localhost，和,http)。</p>
+<p>当有错误的时候，err是一个Error对象，err.code是错误代码号。</p>
+<h3 id="dns-resolve(hostname[,rrtype],callback)">dns.resolve(hostname[,rrtype],callback)</h3><p>解析一个域名为一个被rrtype指定的record类型数组。<br>有效的rrtypes如下:<br>‘A’: (IPV4地址，默认)<br>‘AAAA’(IPV6地址)<br>‘MX’(邮件交换纪录)<br>‘TXT’(文本纪录)<br>‘SRV’(SRV纪录)<br>‘PTR’(used for reverse IP lookups)<br>‘NS’(name server records)<br>‘CNAME’(canonical name records)<br>‘SOA’(start of authority record)</p>
+<h3 id="dns-resolve4(hostname,callback)">dns.resolve4(hostname,callback)</h3><p>和dns.resolve(),但是只有IPV4查询(A纪录)。地址存在一个IPV4地址数组。比如[74.125.79.104,’74.125.79.105’,’74.125.79.106’]。</p>
+<h3 id="dns-resolve6(hostname,callback)">dns.resolve6(hostname,callback)</h3><p>和dna.resolve4()一样，只不过是做IPV6查询的。（AAAA查询）</p>
+<p>类似的还有dns.resolveMx(),dns.resolveTxt(hostname,callback),dns.resolveSrv(hostname,callback),dns.resoveSoa(hostname,callback),dns.resolveNs(hostname,callback),dns.resoveCname(hostname,callback)</p>
+<h3 id="dns-reverse(ip,callback)">dns.reverse(ip,callback)</h3><p>根据ip地址解析出IP的域名数组。回调函数有一组参数(err,hostnames)。当有错误出现的时候，err是一个Error对象。err.code会给出错误代码。</p>
+<h3 id="dns-getServers()">dns.getServers()</h3><p>返回当前使用的IP地址的字符串的数组。</p>
+<h3 id="dns-setServers(servers)">dns.setServers(servers)</h3><p>给定一个字符串形式的IP地址数组，将这些地址设置成解析域名的服务地址。<br>如果你给IP地址指定了一个端口号，那么可能会出错，因为模块并不支持这些。</p>
+<p>这里会抛出异常，如果你传递不合法的输入值。</p>
+<h3 id="Error_codes">Error codes</h3><p>dns.NODATA: DNS server returned answer with no data.<br>dns.FORMERR: DNS server claims query was misformatted.<br>dns.SERVFAIL: DNS server returned general failure.<br>dns.NOTFOUND: Domain name not found.<br>dns.NOTIMP: DNS server does not implement requested operation.<br>dns.REFUSED: DNS server refused query.<br>dns.BADQUERY: Misformatted DNS query.<br>dns.BADNAME: Misformatted hostname.<br>dns.BADFAMILY: Unsupported address family.<br>dns.BADRESP: Misformatted DNS reply.<br>dns.CONNREFUSED: Could not contact DNS servers.<br>dns.TIMEOUT: Timeout while contacting DNS servers.<br>dns.EOF: End of file.<br>dns.FILE: Error reading file.<br>dns.NOMEM: Out of memory.<br>dns.DESTRUCTION: Channel is being destroyed.<br>dns.BADSTR: Misformatted string.<br>dns.BADFLAGS: Illegal flags specified.<br>dns.NONAME: Given hostname is not numeric.<br>dns.BADHINTS: Illegal hints flags specified.<br>dns.NOTINITIALIZED: c-ares library initialization not yet performed.<br>dns.LOADIPHLPAPI: Error loading iphlpapi.dll.<br>dns.ADDRGETNETWORKPARAMS: Could not find GetNetworkParams function.<br>dns.CANCELLED: DNS query cancelled.</p>
+<h3 id="支持的getaddrinfo标志">支持的getaddrinfo标志</h3><p>下面的标志可以被传递给dns.lookup()函数。</p>
+<p>dns.ADDRCONFIG: Returned address types are determined by the types of addresses supported by the current system. For example, IPv4 addresses are only returned if the current system has at least one IPv4 address configured. Loopback addresses are not considered.<br>dns.V4MAPPED: If the IPv6 family was specified, but no IPv6 addresses were found, then return IPv4 mapped IPv6 addresses. Note that it is not supported on some operating systems (e.g FreeBSD 10.1).</p>
+<h3 id="总结">总结</h3><p>对于这个模块，只是对一些方法的使用有了一些体验，对于这个模块的用途可能需要在后续的开发工作中做出总结。</p>
+
+      
+    </div>
+
+    <div class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/DNS，域名系统/"> #DNS，域名系统 </a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/11/15/Node-js官网API阅读之HTTP模块阅读记录/">Node.js官网API阅读之HTTP模块阅读记录</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/11/13/Node-js官方API阅读之Debugger模块阅读记录/">Node.js官方API阅读之Debugger模块阅读记录</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </div>
+  </div>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+
+    
+      <div class="comments" id="comments">
+        
+          <div class="ds-thread" data-thread-key="2015/11/14/Node-js官网API阅读之DNS模块阅读纪录/"
+               data-title="Node.js官网API阅读之DNS模块鱼肚纪录" data-url="http://xdushepherd.me/2015/11/14/Node-js官网API阅读之DNS模块阅读纪录/">
+          </div>
+        
+      </div>
+    
+  </div>
+
+
+        </div>
+
+        
+      </div>
+
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview">
+        <div class="site-author motion-element">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="xdushepherd" />
+          <p class="site-author-name">xdushepherd</p>
+        </div>
+        <p class="site-description motion-element">最是人间留不住，朱颜辞镜花辞树</p>
+        <div class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">19</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            <a href="/categories">
+              <span class="site-state-item-count">7</span>
+              <span class="site-state-item-name">分类</span>
+              </a>
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">20</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </div>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+              <a href="https://github.com/xdushepherd" target="_blank">GitHub</a>
+            </span>
+            
+              <span class="links-of-author-item">
+              <a href="http://www.zhihu.com/people/xdushepherd" target="_blank">ZhiHu</a>
+            </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+        
+      </div>
+
+      
+        <div class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dns-lookup(hostname[-options],callback)"><span class="nav-number">2.</span> <span class="nav-text">dns.lookup(hostname[.options],callback)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dns-lookupService(address,port,callback)"><span class="nav-number">3.</span> <span class="nav-text">dns.lookupService(address,port,callback)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dns-resolve(hostname[,rrtype],callback)"><span class="nav-number">4.</span> <span class="nav-text">dns.resolve(hostname[,rrtype],callback)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dns-resolve4(hostname,callback)"><span class="nav-number">5.</span> <span class="nav-text">dns.resolve4(hostname,callback)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dns-resolve6(hostname,callback)"><span class="nav-number">6.</span> <span class="nav-text">dns.resolve6(hostname,callback)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dns-reverse(ip,callback)"><span class="nav-number">7.</span> <span class="nav-text">dns.reverse(ip,callback)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dns-getServers()"><span class="nav-number">8.</span> <span class="nav-text">dns.getServers()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dns-setServers(servers)"><span class="nav-number">9.</span> <span class="nav-text">dns.setServers(servers)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Error_codes"><span class="nav-number">10.</span> <span class="nav-text">Error codes</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#支持的getaddrinfo标志"><span class="nav-number">11.</span> <span class="nav-text">支持的getaddrinfo标志</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">12.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </div>
+      
+
+    </div>
+  </div>
+
+
+    </div>
+
+    <div id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; &nbsp; 
+  2016
+  <span class="with-love">
+    <i class="icon-heart"></i>
+  </span>
+  <span class="author">xdushepherd</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+
+      </div>
+    </div>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.4"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.4"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.4" id="motion.global"></script>
+
+
+
+  <script type="text/javascript" src="/js/search-toggle.js"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.4" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var $sidebarInner = $('.sidebar-inner');
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.didShow', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+          var self = this;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      $(indicator).velocity('stop').velocity({
+        opacity: action === 'show' ? 0.4 : 0
+      }, { duration: 100 });
+    }
+
+  });
+</script>
+
+
+  <script type="text/javascript" id="sidebar.nav">
+    $(document).ready(function () {
+      var html = $('html');
+
+      $('.sidebar-nav li').on('click', function () {
+        var item = $(this);
+        var activeTabClassName = 'sidebar-nav-active';
+        var activePanelClassName = 'sidebar-panel-active';
+        if (item.hasClass(activeTabClassName)) {
+          return;
+        }
+
+        var currentTarget = $('.' + activePanelClassName);
+        var target = $('.' + item.data('target'));
+
+        currentTarget.velocity('transition.slideUpOut', 200, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', 200)
+            .addClass(activePanelClassName);
+        });
+
+        item.siblings().removeClass(activeTabClassName);
+        item.addClass(activeTabClassName);
+      });
+
+      $('.post-toc a').on('click', function (e) {
+        e.preventDefault();
+        var offset = $(escapeSelector(this.getAttribute('href'))).offset().top;
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        });
+      });
+
+      // Expand sidebar on post detail page by default, when post has a toc.
+      var $tocContent = $('.post-toc-content');
+      if (isDesktop() && CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    });
+  </script>
+
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+    });
+  </script>
+
+  
+
+  
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"shepherd"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+
+
+  
+  
+
+</body>
+</html>
